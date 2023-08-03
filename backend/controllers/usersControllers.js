@@ -82,7 +82,7 @@ const dataUser = asyncHandler(async (req, res) => {
    
     let listOfMovies = []
       
-    listOfMovies = await Movie.find({_id: user.likedMovies}, 'title overview')
+    listOfMovies = await Movie.find({_id: likedMovies}, 'title overview poster_path')
     
     const result = {
         user: req.user,
