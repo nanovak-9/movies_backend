@@ -43,19 +43,23 @@ const createUser = asyncHandler(async (req, res) => {
 })
 
 
-
 const signinUser = asyncHandler(async (req, res) => {
     
     const {email, password} = req.body
 
     const user = await User.findOne({email})
 
+    let listOfMovies = []
+      
+    listOfMovies = await Movie.find({_id: user.likedMovies}, 'title overview')
+
     if (user && (await bcrypt.compare(password, user.password))){
         res.status(200).json({
             _id: user.id,
             name: user.name,
             email: user.email, 
-            token: generateToken(user._id)
+            token: generateToken(user._id),
+            listOfMovies
         })
     }else {
         res.status(400)
@@ -71,26 +75,14 @@ const generateToken = (id) => {
 }
 
 
-
 const dataUser = asyncHandler(async (req, res) => {
     
     const user = await getUserId(req)
     const likedMovies = user.likedMovies
-    console.log('LIST: ', likedMovies)
-
+   
     let listOfMovies = []
-   /*let movieId
-    let movie*/
-    
+      
     listOfMovies = await Movie.find({_id: user.likedMovies}, 'title overview')
-
-    /*for (let i = 0; i < user.likedMovies.length; i++) {
-        movieId = likedMovies[i].valueOf()
-        console.log('MOVIE ID:', movieId)
-        movie = await Movie.findOne({_id: movieId}, 'title overview')
-        console.log('MOVIE:', movie)
-        listOfMovies.push(movie)
-    }*/
     
     const result = {
         user: req.user,
@@ -98,10 +90,6 @@ const dataUser = asyncHandler(async (req, res) => {
     }
     
     res.status(200).json(result)
-
-
-
-
 
 })
 

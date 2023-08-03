@@ -12,7 +12,7 @@ const getMovies= async (req, res) => {
 
 const createMovie= asyncHandler(async (req, res) => {
     
-    if(!req.body.title){
+    if(!req.body.title || !req.body.overview){
         res.status(400)
         throw new Error('Information missing. Cannot create new movie.')
     }
@@ -111,8 +111,6 @@ const updateLessLikes = asyncHandler(async (req, res) => {
     const movieId = movie._id.valueOf()
 
     const foundId = user.likedMovies.find((m) => m == movieId)
-
-    console.log('FOUND ID:', foundId)
 
     if(foundId == undefined) {
         res.status(400)
